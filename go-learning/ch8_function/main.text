@@ -1,0 +1,44 @@
+Windows Build เพื่อใช้งานบน MacOS
+----
+การ Cross-Compile สำหรับ macOS
+---
+CMD
+---
+set GOOS=darwin
+set GOARCH=arm64
+go build -o macos/main .
+
+PowerShell
+---
+$env:GOOS="darwin"
+$env:GOARCH="arm64"
+go build -o macos/main .
+
+-------------------------------------------------
+
+MacOS Build เพื่อใช้บน Windows
+----
+การ Cross-Compile สำหรับ Windows
+---
+CMD
+---
+set GOOS=windows
+set GOARCH=amd64
+go build -o windows/main.exe  .
+
+
+--------------------------------------------------
+Windows and MacOS Build สำหรับ Linux
+การ Cross-Compile สำหรับ Linux
+---
+CMD
+---
+set GOOS=linux
+set GOARCH=amd64
+go build -o linux/main .
+
+PowerShell
+---
+$env:GOOS="linux"
+$env:GOARCH="amd64"
+go build -o linux/main .
