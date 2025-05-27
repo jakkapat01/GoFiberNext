@@ -6,10 +6,10 @@ import (
 
 // public function
 func SayMeeting() {
-	fmt.Println("Meet, from greet package")
+	fmt.Println("Hello, from the meeting method")
 }
 
 // private function
 func sayhi() {
-	fmt.Println("hi private, from greet package")
+	fmt.Println("Hello, from the private method")
 }

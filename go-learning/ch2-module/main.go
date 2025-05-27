@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	_ "math"
 
 	"github.com/google/uuid"
-	"github.com/jakkapat01/jakkapat/greeting"
+	"github.com/jakkapat01/GoFiberNext/greeting"
 )
 
 func main() {
