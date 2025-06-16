@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/jakkapat01/fiber-ecommerce-api/internal/adapters/persistence/models"
 	"gorm.io/driver/postgres"
@@ -16,11 +17,47 @@ func SetupDatabase(config *Config) *gorm.DB {
 	if err != nil {
 		log.Fatal("failed to connect to database:", err)
 	}
-	err = db.AutoMigrate(&models.User{})
-	if err != nil {
-		log.Fatal("failed to migrate database:", err)
-	}
+
 	log.Println("Database connected and migrated successfully")
+	if shouldRunMigrations() {
+		runMigration(db)
+	} else {
+		autoMigrate := os.Getenv("AUTO_MIGRATE")
+		appEnv := os.Getenv("APP_ENV")
+
+		if autoMigrate == "false" {
+			log.Println("Skipping database migrations as (AUTO_MIGRATE=false)")
+		} else if appEnv == "production" && autoMigrate != "true" {
+			log.Println("Skipping database migrations in (production environment, set AUTO_MIGRATE=true tp enable)")
+		} else {
+			log.Println("Skipping database migrations (set AUTO_MIGRATE=true to enable)")
+		}
+	}
 
 	return db
+}
+
+// function ตรวจสอบว่าควร migrate database หรือไม่
+func shouldRunMigrations() bool {
+	if os.Getenv("AUTO_MIGRATE") == "false" {
+		return false
+	}
+	if os.Getenv("AUTO_MIGRATE") == "true" {
+		return true
+	}
+	// development environment ควร migrate อัตโนมัติ
+	if os.Getenv("APP_ENV") == "development" {
+		return true
+	}
+	// production environment ไม่ควร migrate อัตโนมัติ
+	return false
+}
+
+func runMigration(db *gorm.DB) {
+	log.Println("Starting database migrations...")
+	err := db.AutoMigrate(&models.User{})
+	if err != nil {
+		log.Fatalf("Fail to migrate database: %v", err)
+	}
+	log.Println("Database migrations completed successfully")
 }
