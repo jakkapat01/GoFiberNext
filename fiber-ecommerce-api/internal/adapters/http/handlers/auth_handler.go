@@ -18,6 +18,17 @@ func NewAuthHandler(authService services.AuthService) *AuthHandler {
 }
 
 // ฟังก์ชันสำหรับลงทะเบียนผู้ใช้ใหม่
+// Register godoc
+// @Summary Register a new user
+// @Description Register a new user account
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body entities.RegisterRequest true "Registration data"
+// @Success 201 {object} entities.User
+// @Failure 400 {object} map[string]string
+// @Failure 409 {object} map[string]string
+// @Router /api/auth/register [post]
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
 
 	var req entities.RegisterRequest
@@ -49,6 +60,17 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 }
 
 // ฟังก์ชันสำหรับเข้าสู่ระบบ
+// Login godoc
+// @Summary Login user
+// @Description Authenticate user and return JWT token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body entities.LoginRequest true "Login credentials"
+// @Success 200 {object} entities.LoginResponse
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Router /api/auth/login [post]
 func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	var req entities.LoginRequest
 
@@ -75,6 +97,17 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 }
 
 // ฟังก์ชัน getProfile สำหรับดึงข้อมูลโปรไฟล์ของผู้ใช้
+// GetProfile godoc
+// @Summary Get user profile
+// @Description Get current user's profile information
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} entities.User
+// @Failure 401 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /api/user/profile [get]
 func (h *AuthHandler) GetProfile(c *fiber.Ctx) error {
 	userID := c.Locals("userID").(string)
 	id, _ := strconv.ParseUint(userID, 10, 32)
