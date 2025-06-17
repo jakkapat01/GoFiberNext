@@ -9,6 +9,8 @@ import (
 
 // Setup Routes
 func SetupRoutes(app *fiber.App, authHandler *handlers.AuthHandler) {
+	// สร้าง handler สำหรับผู้ดูแลระบบ
+	adminHandler := handlers.NewAdminHandler()
 	// Swagger
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	// API Routes
@@ -19,13 +21,14 @@ func SetupRoutes(app *fiber.App, authHandler *handlers.AuthHandler) {
 	auth.Post("/login", authHandler.Login)
 
 	// Protected Routes
+	user := api.Group("/user")
+	user.Use(middleware.AuthMiddleware())        // ใช้ middleware สำหรับตรวจสอบสิทธิ์
+	user.Get("/profile", authHandler.GetProfile) // ดึงข้อมูลโปรไฟล์ของผู้ใช้
+
+	// Admin only Routes
 	admin := api.Group("/admin")
-	admin.Use(middleware.AuthMiddleware())     // ใช้ middleware สำหรับตรวจสอบสิทธิ์
-	admin.Use(middleware.RequireRole("admin")) // ตรวจสอบว่าเป็นผู้ดูแลระบบ
-	admin.Get("/dashboard", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"message": "Welcome to the admin dashboard!",
-		})
-	})
+	admin.Use(middleware.AuthMiddleware())             // ใช้ middleware สำหรับตรวจสอบสิทธิ์
+	admin.Use(middleware.RequireRole("admin"))         // ตรวจสอบว่าเป็นผู้ดูแลระบบ
+	admin.Get("/dashboard", adminHandler.GetDashboard) // ดึงข้อมูลแดชบอร์ดของผู้ดูแลระบบ)
 
 }
