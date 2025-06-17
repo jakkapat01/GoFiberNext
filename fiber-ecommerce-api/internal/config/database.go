@@ -61,3 +61,15 @@ func runMigration(db *gorm.DB) {
 	}
 	log.Println("Database migrations completed successfully")
 }
+
+// ฟังก์ชันสำหรับ migrate แบบ manual
+func RunMigrationManual(config *Config) error {
+	db := SetupDatabase(config)
+	log.Println("Running manual database migration...")
+	err := db.AutoMigrate(&models.User{})
+	if err != nil {
+		return fmt.Errorf("failed to migrate database: %w", err)
+	}
+	log.Println("Manual database migration completed successfully")
+	return nil
+}
