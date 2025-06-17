@@ -18,7 +18,7 @@ func SetupDatabase(config *Config) *gorm.DB {
 		log.Fatal("failed to connect to database:", err)
 	}
 
-	log.Println("Database connected and migrated successfully")
+	log.Println("Database connected successfully")
 	if shouldRunMigrations() {
 		runMigration(db)
 	} else {

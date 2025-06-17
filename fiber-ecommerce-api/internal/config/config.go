@@ -71,7 +71,7 @@ func validateConfig(config *Config) error {
 		if len(config.JWTSecret) < 32 {
 			return fmt.Errorf("JWT_SECRET must be at least 32 characters long for production security")
 		}
-		if config.DBSSLMode == "" {
+		if config.DBSSLMode == "disable" {
 			log.Println("Warning: SSL is disabled for database connection in production")
 		}
 	}
