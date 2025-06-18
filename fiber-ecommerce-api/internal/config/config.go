@@ -9,17 +9,21 @@ import (
 )
 
 type Config struct {
-	AppEnv       string
-	AppPort      string
-	AppURL       string
-	DBHost       string
-	DBPort       string
-	DBUser       string
-	DBPassword   string
-	DBName       string
-	DBSSLMode    string
-	JWTSecret    string
-	JWTExpiresIn string
+	AppEnv         string
+	AppPort        string
+	AppURL         string
+	DBHost         string
+	DBPort         string
+	DBUser         string
+	DBPassword     string
+	DBName         string
+	DBSSLMode      string
+	JWTSecret      string
+	JWTExpiresIn   string
+	AdminEmail     string
+	AdminPassword  string
+	AdminFirstName string
+	AdminLastName  string
 }
 
 func getEnv(key, defaultValue string) string {
@@ -51,6 +55,11 @@ func LoadConfig() (*Config, error) {
 		DBPassword: getEnv("DB_PASS", ""),
 		DBName:     getEnv("DB_NAME", ""),
 		JWTSecret:  getEnv("JWT_SECRET", ""),
+
+		AdminEmail:     getEnv("ADMIN_EMAIL", ""),
+		AdminPassword:  getEnv("ADMIN_PASSWORD", ""),
+		AdminFirstName: getEnv("ADMIN_FIRST_NAME", ""),
+		AdminLastName:  getEnv("ADMIN_LAST_NAME", ""),
 	}
 	if err := validateConfig(config); err != nil {
 		return nil, err
@@ -73,6 +82,18 @@ func validateConfig(config *Config) error {
 		}
 		if config.DBSSLMode == "disable" {
 			log.Println("Warning: SSL is disabled for database connection in production")
+		}
+		if config.AdminEmail == "" {
+			return fmt.Errorf("ADMIN_EMAIL is required for production environment")
+		}
+		if config.AdminPassword == "" {
+			return fmt.Errorf("ADMIN_PASSWORD is required for production environment")
+		}
+		if config.AdminFirstName == "" {
+			return fmt.Errorf("ADMIN_FIRST_NAME is required for production environment")
+		}
+		if config.AdminLastName == "" {
+			return fmt.Errorf("ADMIN_LAST_NAME is required for production environment")
 		}
 	}
 	if config.DBName == "" {

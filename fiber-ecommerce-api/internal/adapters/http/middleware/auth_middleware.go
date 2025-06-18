@@ -13,7 +13,7 @@ func AuthMiddleware() fiber.Handler {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Authorization header is required",
+				"error": "Authorization header required",
 			})
 		}
 		// Check if the Authorization header is in the correct format
@@ -21,10 +21,11 @@ func AuthMiddleware() fiber.Handler {
 		tokenParts := strings.Split(authHeader, " ")
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Invalid Authorization header format",
+				"error": "Invalid authorization header format",
 			})
 		}
-		// Extract the token
+
+		// Validate the token
 		token := tokenParts[1]
 		claims, err := utils.ValidateJWT(token)
 		if err != nil {
@@ -32,7 +33,8 @@ func AuthMiddleware() fiber.Handler {
 				"error": "Invalid token",
 			})
 		}
-		// Store the user ID and role in the context
+
+		// Check if the user ID is present in the claims
 		c.Locals("userID", claims.UserID)
 		c.Locals("role", claims.Role)
 
