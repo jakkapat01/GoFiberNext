@@ -30,5 +30,6 @@ func SetupRoutes(app *fiber.App, authHandler *handlers.AuthHandler) {
 	admin.Use(middleware.AuthMiddleware())             // ใช้ middleware สำหรับตรวจสอบสิทธิ์
 	admin.Use(middleware.RequireRole("admin"))         // ตรวจสอบว่าเป็นผู้ดูแลระบบ
 	admin.Get("/dashboard", adminHandler.GetDashboard) // ดึงข้อมูลแดชบอร์ดของผู้ดูแลระบบ)
+	admin.Post("/register", authHandler.AdminRegister) // ลงทะเบียนผู้ใช้ใหม่โดยผู้ดูแลระบบ
 
 }

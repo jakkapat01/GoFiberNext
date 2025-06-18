@@ -1,9 +1,11 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -96,9 +98,28 @@ func validateConfig(config *Config) error {
 			return fmt.Errorf("ADMIN_LAST_NAME is required for production environment")
 		}
 	}
+	// ตรวจสอบรูปแบบ email
+	if config.AdminEmail != "" && !isValidEmail(config.AdminEmail) {
+		return errors.New("ADMIN_EMAIL must be a valid email address")
+	}
+	// ตรวจสอบค่าพื้นฐานที่ต้องมี
 	if config.DBName == "" {
 		return fmt.Errorf("DB_NAME is required")
 	}
 	return nil
 
+}
+
+// ฟังก์ชันตรวจสอบอีเมลว่าถูกต้องหรือไม่
+func isValidEmail(email string) bool {
+	if email == "" {
+		return false
+	}
+	// ตรวจสอบพื้นฐาน - ต้องมี @ และ . และไม่เริ่มหรือจบด้วย @
+	return len(email) > 0 &&
+		len(email) <= 254 &&
+		strings.Contains(email, "@") &&
+		strings.Contains(email, ".") &&
+		!strings.HasPrefix(email, "@") &&
+		!strings.HasSuffix(email, "@")
 }
